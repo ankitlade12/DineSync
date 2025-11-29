@@ -2,6 +2,8 @@
 
 Turn your **Yelp reviews** into interactive customer-service training for your team.
 
+**Live Demo:** https://yelpreviewgym.streamlit.app/
+
 ## What is YelpReviewGym?
 
 YelpReviewGym uses **Yelp AI** to analyze your business's Yelp reviews and automatically create:

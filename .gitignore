@@ -51,3 +51,14 @@ htmlcov/
 
 # uv
 .uv/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Data files (generated at runtime)
+training_progress.json
+leaderboard.json
+
+# Hackathon files (local only)
+HACKATHON_SUBMISSION.md
+VIDEO_HACKATHON_SCRIPT.md
