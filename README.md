@@ -9,9 +9,9 @@ Turn your **Yelp reviews** into interactive customer-service training for your t
 
 **Live Demo:** https://yelpreviewgym.streamlit.app/
 
-## ⚡ Quick Highlights
+## Quick Highlights
 
-- 🤖 **AI-Powered**: Uses Yelp AI API for review analysis, scenario generation, and feedback
+- **AI-Powered**: Uses Yelp AI API for review analysis, scenario generation, and feedback
 - **Automated Training**: Converts real customer pain points into practice scenarios
 - **Progress Tracking**: Leaderboards, badges, and performance analytics
 - **Production Ready**: 48 unit tests, performance monitoring, deployed live
