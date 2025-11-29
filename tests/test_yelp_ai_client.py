@@ -10,21 +10,25 @@ from yelpreviewgym.yelp_ai_client import YelpAIClient, YelpAIError
 class TestYelpAIClient:
     """Test YelpAIClient functionality."""
     
-    def test_client_initialization(self):
+    @patch('yelpreviewgym.yelp_ai_client.get_settings')
+    def test_client_initialization(self, mock_settings):
         """Test client initialization with API key."""
+        mock_settings.return_value.yelp_api_key = "default_key"
         client = YelpAIClient(api_key="test_key_123")
         assert client.api_key == "test_key_123"
     
-    def test_client_initialization_from_settings(self):
+    @patch('yelpreviewgym.yelp_ai_client.get_settings')
+    def test_client_initialization_from_settings(self, mock_settings):
         """Test client initialization from settings."""
-        with patch('yelpreviewgym.yelp_ai_client.get_settings') as mock_settings:
-            mock_settings.return_value.yelp_api_key = "settings_key"
-            client = YelpAIClient()
-            assert client.api_key == "settings_key"
+        mock_settings.return_value.yelp_api_key = "settings_key"
+        client = YelpAIClient()
+        assert client.api_key == "settings_key"
     
+    @patch('yelpreviewgym.yelp_ai_client.get_settings')
     @patch('yelpreviewgym.yelp_ai_client.requests.post')
-    def test_chat_success(self, mock_post):
+    def test_chat_success(self, mock_post, mock_settings):
         """Test successful chat request."""
+        mock_settings.return_value.yelp_api_key = "test_key"
         mock_response = Mock()
         mock_response.ok = True
         mock_response.json.return_value = {
@@ -40,24 +44,28 @@ class TestYelpAIClient:
         assert result["chat_id"] == "chat_123"
         mock_post.assert_called_once()
     
+    @patch('yelpreviewgym.yelp_ai_client.get_settings')
     @patch('yelpreviewgym.yelp_ai_client.requests.post')
-    def test_chat_with_chat_id(self, mock_post):
+    def test_chat_with_chat_id(self, mock_post, mock_settings):
         """Test chat request with existing chat_id."""
+        mock_settings.return_value.yelp_api_key = "test_key"
         mock_response = Mock()
         mock_response.ok = True
         mock_response.json.return_value = {"response": {"text": "Continued conversation"}}
         mock_post.return_value = mock_response
         
         client = YelpAIClient(api_key="test_key")
-        result = client.chat("Follow-up query", chat_id="existing_chat_123")
+        client.chat("Follow-up query", chat_id="existing_chat_123")
         
         # Check that chat_id was included in request
         call_args = mock_post.call_args
         assert call_args[1]['json']['chat_id'] == "existing_chat_123"
     
+    @patch('yelpreviewgym.yelp_ai_client.get_settings')
     @patch('yelpreviewgym.yelp_ai_client.requests.post')
-    def test_chat_api_error(self, mock_post):
+    def test_chat_api_error(self, mock_post, mock_settings):
         """Test handling of API error."""
+        mock_settings.return_value.yelp_api_key = "invalid_key"
         mock_response = Mock()
         mock_response.ok = False
         mock_response.status_code = 401
@@ -72,9 +80,11 @@ class TestYelpAIClient:
         assert "401" in str(exc_info.value)
         assert "Unauthorized" in str(exc_info.value)
     
+    @patch('yelpreviewgym.yelp_ai_client.get_settings')
     @patch('yelpreviewgym.yelp_ai_client.requests.post')
-    def test_chat_json_parse_error(self, mock_post):
+    def test_chat_json_parse_error(self, mock_post, mock_settings):
         """Test handling of JSON parse error."""
+        mock_settings.return_value.yelp_api_key = "test_key"
         mock_response = Mock()
         mock_response.ok = True
         mock_response.json.side_effect = ValueError("Invalid JSON")
