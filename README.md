@@ -145,7 +145,7 @@ All of the above PLUS:
 
 ### Project Structure
 ```
-CareRoute/
+YelpReviewGym/
 ├── run_app.py                          # Standard version
 ├── run_app_enhanced.py                 # Enhanced version (recommended)
 ├── launch.sh                           # Interactive launcher
