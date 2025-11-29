@@ -58,6 +58,7 @@ htmlcov/
 # Data files (generated at runtime)
 training_progress.json
 leaderboard.json
+performance_metrics.json
 
 # Hackathon files (local only)
 HACKATHON_SUBMISSION.md

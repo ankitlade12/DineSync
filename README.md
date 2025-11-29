@@ -1,8 +1,21 @@
 # YelpReviewGym
 
+[![Tests](https://github.com/ankitlade12/YelpReviewGym/actions/workflows/tests.yml/badge.svg)](https://github.com/ankitlade12/YelpReviewGym/actions/workflows/tests.yml)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Turn your **Yelp reviews** into interactive customer-service training for your team.
 
 **Live Demo:** https://yelpreviewgym.streamlit.app/
+
+## ⚡ Quick Highlights
+
+- 🤖 **AI-Powered**: Uses Yelp AI API for review analysis, scenario generation, and feedback
+- **Automated Training**: Converts real customer pain points into practice scenarios
+- **Progress Tracking**: Leaderboards, badges, and performance analytics
+- **Production Ready**: 48 unit tests, performance monitoring, deployed live
+- **Fast Setup**: Install and run in under 5 minutes
 
 ## Architecture Overview
 
