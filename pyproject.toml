@@ -1,0 +1,26 @@
+[project]
+name = "yelpreviewgym"
+version = "0.1.0"
+description = "YelpReviewGym – Staff training tool using Yelp reviews and AI coaching"
+authors = [{name = "Ankit Hemant Lade", email = "ankit.lade@ascentt.com"}]
+requires-python = ">=3.11,<3.14"
+dependencies = [
+  "pydantic>=2.8.0",
+  "pydantic-settings>=2.4.0",
+  "requests>=2.32.0",
+  "streamlit>=1.37.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "python-dotenv>=1.0.1",
+  "pytest>=9.0.1",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.uv]
+# You can tweak this as you like
+python-preference = "managed"
