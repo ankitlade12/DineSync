@@ -41,45 +41,21 @@ graph LR
 
 ```mermaid
 graph TB
-    subgraph UI["USER INTERFACE (Streamlit Frontend)"]
-        UI1[Analyze Tab]
-        UI2[Generate Tab]
-        UI3[Practice Tab]
-        UI4[Dashboard]
-        UI5[Leaderboard]
-        UI6[Profile]
-    end
+    UI["🖥️ USER INTERFACE<br/>Streamlit | Analyze, Generate, Practice<br/>Dashboard, Leaderboard, Profile"]
+    APP["⚙️ APPLICATION<br/>run_app_enhanced.py<br/>Session State | UI Rendering"]
+    SVC["🔧 SERVICE LAYER<br/>yelp_ai_client | insights_service<br/>enhanced_features"]
+    DATA["💾 DATA LAYER<br/>schemas.py | config.py<br/>JSON Storage"]
+    EXT["🤖 YELP AI API<br/>Review Analysis | NLG<br/>Response Evaluation"]
 
-    subgraph APP["APPLICATION LAYER"]
-        APP1["run_app_enhanced.py<br/>• Session State Management<br/>• UI Rendering<br/>• User Interaction Handling"]
-    end
+    UI --> APP --> SVC
+    SVC --> DATA
+    SVC --> EXT
 
-    subgraph SERVICE["SERVICE LAYER"]
-        SVC1["yelp_ai_client.py<br/>• API Client<br/>• Chat Sessions<br/>• Error Handling"]
-        SVC2["insights_service.py<br/>• Review Analysis<br/>• Scenario Gen<br/>• Response Eval"]
-        SVC3["enhanced_features.py<br/>• Progress<br/>• Leaderboard<br/>• Badges<br/>• Analytics"]
-    end
-
-    subgraph DATA["DATA LAYER"]
-        DATA1["schemas.py<br/>Data Models"]
-        DATA2["config.py<br/>Settings"]
-        DATA3["JSON Storage<br/>Progress & Leaderboard"]
-    end
-
-    subgraph EXT["EXTERNAL SERVICES"]
-        EXT1["Yelp AI Chat API<br/>• Review Analysis<br/>• NLG<br/>• Response Evaluation"]
-    end
-
-    UI --> APP
-    APP --> SERVICE
-    SERVICE --> DATA
-    SERVICE --> EXT
-
-    style UI fill:#e1f5ff
-    style APP fill:#fff4e1
-    style SERVICE fill:#e8f5e9
-    style DATA fill:#f3e5f5
-    style EXT fill:#ffe0b2
+    style UI fill:#e1f5ff,stroke:#0288d1,stroke-width:2px
+    style APP fill:#fff4e1,stroke:#f57c00,stroke-width:2px
+    style SVC fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    style DATA fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style EXT fill:#ffe0b2,stroke:#e64a19,stroke-width:2px
 ```
 
 ### Tech Stack
