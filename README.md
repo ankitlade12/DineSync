@@ -6,7 +6,92 @@ Turn your **Yelp reviews** into interactive customer-service training for your t
 
 ## Architecture Overview
 
-![YelpReviewGym Technical Architecture](image.png)
+### High-Level Workflow
+
+```mermaid
+graph LR
+    subgraph "STEP 1: ANALYZE"
+        A[User Input<br/>Business Name + Location] --> B[Yelp AI API<br/>Analyze Reviews]
+        B --> C[AI Output<br/>Delights, Pain Points, Personas]
+    end
+    
+    subgraph "STEP 2: GENERATE SCENARIOS"
+        C --> D[Yelp AI<br/>Vectorize Pain Points]
+        D --> E[For Each Pain Point]
+        E --> F[AI Output<br/>BAD/GOOD Examples<br/>Difficulty, Category]
+    end
+    
+    subgraph "STEP 3: PRACTICE & FEEDBACK"
+        F --> G[User Response Text]
+        G --> H[AI Output<br/>Evaluate Response]
+        H --> I[Score 0-10<br/>+ Feedback]
+        I --> J[Update Progress<br/>Update Leaderboard]
+    end
+
+    style A fill:#e1f5ff
+    style C fill:#e1f5ff
+    style F fill:#e1f5ff
+    style I fill:#e1f5ff
+    style B fill:#fff4e1
+    style D fill:#fff4e1
+    style H fill:#fff4e1
+```
+
+### System Architecture
+
+```mermaid
+graph TB
+    subgraph UI["USER INTERFACE (Streamlit Frontend)"]
+        UI1[Analyze Tab]
+        UI2[Generate Tab]
+        UI3[Practice Tab]
+        UI4[Dashboard]
+        UI5[Leaderboard]
+        UI6[Profile]
+    end
+
+    subgraph APP["APPLICATION LAYER"]
+        APP1["run_app_enhanced.py<br/>• Session State Management<br/>• UI Rendering<br/>• User Interaction Handling"]
+    end
+
+    subgraph SERVICE["SERVICE LAYER"]
+        SVC1["yelp_ai_client.py<br/>• API Client<br/>• Chat Sessions<br/>• Error Handling"]
+        SVC2["insights_service.py<br/>• Review Analysis<br/>• Scenario Gen<br/>• Response Eval"]
+        SVC3["enhanced_features.py<br/>• Progress<br/>• Leaderboard<br/>• Badges<br/>• Analytics"]
+    end
+
+    subgraph DATA["DATA LAYER"]
+        DATA1["schemas.py<br/>Data Models"]
+        DATA2["config.py<br/>Settings"]
+        DATA3["JSON Storage<br/>Progress & Leaderboard"]
+    end
+
+    subgraph EXT["EXTERNAL SERVICES"]
+        EXT1["Yelp AI Chat API<br/>• Review Analysis<br/>• NLG<br/>• Response Evaluation"]
+    end
+
+    UI --> APP
+    APP --> SERVICE
+    SERVICE --> DATA
+    SERVICE --> EXT
+
+    style UI fill:#e1f5ff
+    style APP fill:#fff4e1
+    style SERVICE fill:#e8f5e9
+    style DATA fill:#f3e5f5
+    style EXT fill:#ffe0b2
+```
+
+### Tech Stack
+
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| **Frontend** | Streamlit 1.37+ | Web UI framework |
+| **Backend** | Python 3.11 | Application logic |
+| **AI Engine** | Yelp AI Chat API | NLU & NLG |
+| **Validation** | Pydantic 2.8+ | Data validation |
+| **Storage** | JSON Files | Persistence |
+| **Deployment** | Streamlit Cloud | Hosting |
 
 ## What is YelpReviewGym?
 
