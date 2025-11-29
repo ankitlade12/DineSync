@@ -1,4 +1,4 @@
-# YelpReviewGym 💬🏋️‍♂️
+# YelpReviewGym
 
 Turn your **Yelp reviews** into interactive customer-service training for your team.
 
@@ -10,25 +10,25 @@ YelpReviewGym uses **Yelp AI** to analyze your business's Yelp reviews and autom
 2. **Training Scenarios** - Real-world customer service situations based on actual pain points
 3. **Interactive Practice** - Staff can practice responses and get AI-powered feedback
 
-## ✨ Features
+## Features
 
 ### Core Features
-- 🔍 **Automatic Review Analysis** - Extracts patterns from your Yelp reviews
-- 🎭 **Scenario Generation** - Creates bad vs. good dialogue examples for each pain point
-- ✅ **AI Feedback** - Scores staff responses (0-10) with strengths & improvements
-- 💬 **Powered by Yelp AI** - Uses real business data from Yelp
+- **Automatic Review Analysis** - Extracts patterns from your Yelp reviews
+- **Scenario Generation** - Creates bad vs. good dialogue examples for each pain point
+- **AI Feedback** - Scores staff responses (0-10) with strengths & improvements
+- **Powered by Yelp AI** - Uses real business data from Yelp
 
-### 🚀 Professional Edition Features
-- 📊 **Progress Tracking** - Save and track all training sessions with JSON persistence
-- 🏆 **Leaderboard System** - Team rankings, competition, and top performer tracking
-- 🎖️ **Badges & Achievements** - Gamification with "First Steps", "Practice Makes Perfect", "Master Trainer", "High Achiever", "Perfect Score"
-- 📈 **Analytics Dashboard** - Score trends, improvement tracking, and visual charts
-- 🎓 **Certification System** - Bronze/Silver/Gold certificates based on performance
-- 📄 **Training Reports** - Comprehensive session reports with downloadable exports
-- 👤 **User Profiles** - Individual performance tracking and personalized stats
-- 🎯 **Difficulty Levels** - Easy/Medium/Hard scenarios with smart categorization
-- 🗂️ **Multi-tab Interface** - Organized tabs for Training, Analytics, Leaderboard, and Reports
-- ⏱️ **Session Tracking** - Monitor time spent and scenarios practiced per session
+### Professional Edition Features
+- **Progress Tracking** - Save and track all training sessions with JSON persistence
+- **Leaderboard System** - Team rankings, competition, and top performer tracking
+- **Badges & Achievements** - Gamification with "First Steps", "Practice Makes Perfect", "Master Trainer", "High Achiever", "Perfect Score"
+- **Analytics Dashboard** - Score trends, improvement tracking, and visual charts
+- **Certification System** - Bronze/Silver/Gold certificates based on performance
+- **Training Reports** - Comprehensive session reports with downloadable exports
+- **User Profiles** - Individual performance tracking and personalized stats
+- **Difficulty Levels** - Easy/Medium/Hard scenarios with smart categorization
+- **Multi-tab Interface** - Organized tabs for Training, Analytics, Leaderboard, and Reports
+- **Session Tracking** - Monitor time spent and scenarios practiced per session
 
 ## Quick Start
 
@@ -72,11 +72,11 @@ streamlit run run_app_enhanced.py
 
 #### Standard Version (run_app.py)
 1. **Enter Business Details** - Business name, location, and type
-2. **Analyze Reviews** - Click "🔍 Analyze Business" to extract insights
-3. **Generate Scenarios** - Click "� Generate Scenarios" for practice situations
+2. **Analyze Reviews** - Click "Analyze Business" to extract insights
+3. **Generate Scenarios** - Click "Generate Scenarios" for practice situations
 4. **Practice & Get Feedback** - Select a scenario, respond, get AI feedback
 
-#### Enhanced Version (run_app_enhanced.py) ⭐ RECOMMENDED
+#### Enhanced Version (run_app_enhanced.py) - RECOMMENDED
 1. **Set User Profile** - Enter your name in the sidebar
 2. **Analyze Business** - Same as standard version
 3. **Generate & Practice** - Same workflow with added difficulty levels
@@ -199,25 +199,25 @@ source ~/.zshrc
 
 | Feature | Standard (run_app.py) | Enhanced (run_app_enhanced.py) |
 |---------|----------------------|--------------------------------|
-| Review Analysis | ✅ | ✅ |
-| Scenario Generation | ✅ | ✅ |
-| AI Feedback | ✅ | ✅ |
-| Progress Tracking | ❌ | ✅ |
-| Leaderboard | ❌ | ✅ |
-| Badges & Gamification | ❌ | ✅ |
-| Analytics Dashboard | ❌ | ✅ |
-| Certification System | ❌ | ✅ |
-| Training Reports | ❌ | ✅ |
-| User Profiles | ❌ | ✅ |
-| Difficulty Levels | ❌ | ✅ |
-| Multi-tab Interface | ❌ | ✅ |
-| Session Tracking | ❌ | ✅ |
+| Review Analysis | Yes | Yes |
+| Scenario Generation | Yes | Yes |
+| AI Feedback | Yes | Yes |
+| Progress Tracking | No | Yes |
+| Leaderboard | No | Yes |
+| Badges & Gamification | No | Yes |
+| Analytics Dashboard | No | Yes |
+| Certification System | No | Yes |
+| Training Reports | No | Yes |
+| User Profiles | No | Yes |
+| Difficulty Levels | No | Yes |
+| Multi-tab Interface | No | Yes |
+| Session Tracking | No | Yes |
 
 **Recommendation:** Use **run_app_enhanced.py** for production - it's production-ready with enterprise features!
 
 ## Future Enhancements
 
-### Completed ✅
+### Completed
 - [x] Team leaderboard with scores
 - [x] Export scenarios to PDF/Text
 - [x] Progress tracking and analytics
@@ -225,7 +225,7 @@ source ~/.zshrc
 - [x] Certification system
 - [x] Multi-level difficulty
 
-### Planned 🚧
+### Planned
 - [ ] Multi-language support
 - [ ] Integration with LMS platforms
 - [ ] Voice practice mode
@@ -233,17 +233,9 @@ source ~/.zshrc
 - [ ] Mobile app version
 - [ ] API for third-party integrations
 
-## License
-
-MIT License - feel free to use for your business!
-
 ## Credits
 
 Built with:
 - [Yelp AI](https://www.yelp.com/developers) - Business data and AI analysis
 - [Streamlit](https://streamlit.io/) - Web interface
 - [Python](https://python.org/) - Backend logic
-
----
-
-**Made for local businesses** 💼 **Powered by Yelp AI** 🤖
