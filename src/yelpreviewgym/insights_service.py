@@ -4,6 +4,7 @@ from typing import Dict, List, Any
 
 from .schemas import BusinessInsights, TrainingScenario, DialogueTurn, FeedbackResult
 from .yelp_ai_client import YelpAIClient
+from .performance_metrics import track_performance
 
 
 def build_insights_prompt(business_name: str, location: str, business_type: str) -> str:
@@ -37,7 +38,14 @@ def build_scenarios_prompt(
     business_type: str,
     pain_points: List[str],
 ) -> str:
-    """Generate prompt for creating training scenarios from pain points."""
+    """Generate prompt for creating training scenarios from pain points.
+    
+    Args:
+        business_name: Name of the business
+        location: Business location (for context)
+        business_type: Type of business (for context)
+        pain_points: List of customer pain points
+    """
     if not pain_points:
         pain_list = "- Customer service issues"
     else:
@@ -143,7 +151,7 @@ def parse_feedback_json(data: Dict[str, Any]) -> FeedbackResult:
     try:
         if raw_score is not None:
             score = float(raw_score)
-    except Exception:
+    except (ValueError, TypeError):
         score = None
 
     summary = str(data.get("summary", "")).strip()
@@ -160,49 +168,64 @@ def parse_feedback_json(data: Dict[str, Any]) -> FeedbackResult:
     )
 
 
+@track_performance(metadata={"operation": "analyze_business"})
 def analyze_business(
     business_name: str, location: str, business_type: str
 ) -> tuple[BusinessInsights | None, str]:
     """Analyze business reviews and extract insights."""
-    client = YelpAIClient()
-    prompt = build_insights_prompt(business_name, location, business_type)
-    raw = client.chat(prompt)
-    parsed_json, raw_text = YelpAIClient.json_from_response(raw)
-    if parsed_json is None:
-        return None, raw_text
-    return parse_insights_json(parsed_json), raw_text
+    try:
+        client = YelpAIClient()
+        prompt = build_insights_prompt(business_name, location, business_type)
+        raw = client.chat(prompt)
+        parsed_json, raw_text = YelpAIClient.json_from_response(raw)
+        if parsed_json is None:
+            return None, raw_text
+        return parse_insights_json(parsed_json), raw_text
+    except Exception as e:
+        print(f"Error analyzing business: {e}")
+        return None, ""
 
 
+@track_performance(metadata={"operation": "generate_scenarios"})
 def generate_scenarios(
     business_name: str,
     location: str,
     business_type: str,
-    pains: List[str],
+    pain_points: List[str],
 ) -> tuple[List[TrainingScenario], str]:
     """Generate training scenarios based on pain points."""
-    client = YelpAIClient()
-    prompt = build_scenarios_prompt(business_name, location, business_type, pains)
-    raw = client.chat(prompt)
-    parsed_json, raw_text = YelpAIClient.json_from_response(raw)
-    if parsed_json is None:
-        return [], raw_text
-    return parse_scenarios_json(parsed_json), raw_text
+    try:
+        client = YelpAIClient()
+        prompt = build_scenarios_prompt(business_name, location, business_type, pain_points)
+        raw = client.chat(prompt)
+        parsed_json, raw_text = YelpAIClient.json_from_response(raw)
+        if parsed_json is None:
+            return [], raw_text
+        return parse_scenarios_json(parsed_json), raw_text
+    except Exception as e:
+        print(f"Error generating scenarios: {e}")
+        return [], ""
 
 
+@track_performance(metadata={"operation": "evaluate_staff_reply"})
 def evaluate_staff_reply(
     business_name: str,
     location: str,
     business_type: str,
     scenario: TrainingScenario,
     staff_reply: str,
-) -> tuple[FeedbackResult | None, str]:
+) -> tuple[FeedbackResult, str]:
     """Evaluate staff response and provide feedback."""
-    client = YelpAIClient()
-    prompt = build_feedback_prompt(
-        business_name, location, business_type, scenario, staff_reply
-    )
-    raw = client.chat(prompt)
-    parsed_json, raw_text = YelpAIClient.json_from_response(raw)
-    if parsed_json is None:
-        return None, raw_text
-    return parse_feedback_json(parsed_json), raw_text
+    try:
+        client = YelpAIClient()
+        prompt = build_feedback_prompt(
+            business_name, location, business_type, scenario, staff_reply
+        )
+        raw = client.chat(prompt)
+        parsed_json, raw_text = YelpAIClient.json_from_response(raw)
+        if parsed_json is None:
+            return FeedbackResult(score=None, summary="", strengths=[], improvements=[]), raw_text
+        return parse_feedback_json(parsed_json), raw_text
+    except Exception as e:
+        print(f"Error evaluating reply: {e}")
+        return FeedbackResult(score=None, summary="Error", strengths=[], improvements=[]), ""

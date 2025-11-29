@@ -12,6 +12,7 @@ from typing import Any, Dict, Optional
 import requests
 
 from .config import get_settings
+from .performance_metrics import track_performance
 
 
 YELP_AI_URL = "https://api.yelp.com/ai/chat/v2"
@@ -19,7 +20,6 @@ YELP_AI_URL = "https://api.yelp.com/ai/chat/v2"
 
 class YelpAIError(Exception):
     """Exception raised for Yelp AI API errors."""
-    pass
 
 
 class YelpAIClient:
@@ -29,6 +29,7 @@ class YelpAIClient:
         settings = get_settings()
         self.api_key = api_key or settings.yelp_api_key
 
+    @track_performance(metadata={"api": "yelp_ai", "operation": "chat"})
     def chat(self, query: str, chat_id: Optional[str] = None) -> Dict[str, Any]:
         """Send chat request to Yelp AI API."""
         headers = {
@@ -51,7 +52,7 @@ class YelpAIClient:
             )
         try:
             return resp.json()
-        except Exception as e:
+        except (json.JSONDecodeError, ValueError) as e:
             raise YelpAIError(f"Failed to parse Yelp AI JSON: {e}") from e
 
     @staticmethod
@@ -69,7 +70,7 @@ class YelpAIClient:
         text = ""
         try:
             text = raw.get("response", {}).get("text", "") or ""
-        except Exception:
+        except (KeyError, AttributeError, TypeError):
             text = ""
 
         if not text:
@@ -82,5 +83,5 @@ class YelpAIClient:
         try:
             parsed = json.loads(block)
             return parsed, text
-        except Exception:
+        except (json.JSONDecodeError, ValueError, TypeError):
             return None, text

@@ -151,7 +151,7 @@ def main():
                         st.markdown(f"- **{turn.speaker}:** {turn.text}")
 
                     if st.button(
-                        f"Practice this scenario →",
+                        "Practice this scenario →",
                         key=f"practice_{idx}",
                         use_container_width=True,
                     ):
