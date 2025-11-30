@@ -311,14 +311,32 @@ YelpReviewGym/
 ├── run_app_enhanced.py                 # Enhanced version (recommended)
 ├── launch.sh                           # Interactive launcher
 ├── src/yelpreviewgym/
-│   ├── config.py                      # Settings & environment
-│   ├── schemas.py                     # Data models
-│   ├── yelp_ai_client.py             # Yelp API client
-│   ├── insights_service.py           # Core AI logic
-│   └── enhanced_features.py          # Progress, badges, reports
-├── training_progress.json             # Generated: User progress
-├── leaderboard.json                   # Generated: Team rankings
-└── .env                               # Your YELP_API_KEY
+│   ├── __init__.py                    # Package initialization
+│   ├── __main__.py                    # CLI entry point
+│   ├── config.py                      # Settings & environment variables
+│   ├── schemas.py                     # Pydantic data models
+│   ├── yelp_ai_client.py             # Yelp AI API client
+│   ├── insights_service.py           # AI analysis & scenario generation
+│   ├── user_manager.py               # User profiles & progress tracking
+│   ├── enhanced_features.py          # Badges, reports, analytics
+│   ├── performance_metrics.py        # Performance tracking & monitoring
+│   └── streamlit_app.py              # Original Streamlit UI
+├── tests/
+│   ├── test_user_manager.py          # User management tests (27 tests)
+│   ├── test_enhanced_features.py     # Feature validation tests (38 tests)
+│   ├── test_insights_service.py      # Service layer tests (12 tests)
+│   ├── test_performance_metrics.py   # Metrics tests (11 tests)
+│   ├── test_schemas.py               # Data model tests (12 tests)
+│   └── test_yelp_ai_client.py        # API client tests (13 tests)
+├── .github/workflows/
+│   └── tests.yml                      # CI/CD pipeline
+├── user_data.json                     # Generated: User profiles & progress
+├── performance_metrics.json           # Generated: API performance logs
+├── .env                               # Your YELP_API_KEY (not in git)
+├── .gitignore                         # Git ignore rules
+├── requirements.txt                   # Python dependencies
+├── pyproject.toml                     # Project metadata & config
+└── README.md                          # This file
 ```
 
 ## API Key Setup
