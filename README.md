@@ -24,28 +24,40 @@ Turn your **Yelp reviews** into interactive customer-service training for your t
 
 ```mermaid
 graph LR
+    subgraph "STEP 0: USER SETUP"
+        U[Username Input<br/>Profile Creation] --> UP[User Manager<br/>Load/Create Profile]
+        UP --> US[User State<br/>Progress, Certificates]
+    end
+    
     subgraph "STEP 1: ANALYZE"
-        A[User Input<br/>Business Name + Location] --> B[Yelp AI API<br/>Analyze Reviews]
-        B --> C[AI Output<br/>Delights, Pain Points, Personas]
+        US --> A[Business Input<br/>Name + Location]
+        A --> B[Yelp AI API<br/>Analyze Reviews]
+        B --> C[AI Output<br/>5 Pain Points<br/>Delights, Personas]
     end
     
     subgraph "STEP 2: GENERATE SCENARIOS"
-        C --> D[Yelp AI<br/>Vectorize Pain Points]
+        C --> D[Yelp AI<br/>Generate 5 Scenarios]
         D --> E[For Each Pain Point]
         E --> F[AI Output<br/>BAD/GOOD Examples<br/>Difficulty, Category]
     end
     
     subgraph "STEP 3: PRACTICE & FEEDBACK"
         F --> G[User Response Text]
-        G --> H[AI Output<br/>Evaluate Response]
+        G --> H[Yelp AI<br/>Evaluate Response]
         H --> I[Score 0-10<br/>+ Feedback]
-        I --> J[Update Progress<br/>Update Leaderboard]
+        I --> J[Save Progress<br/>user_data.json]
+        J --> K{Avg Score<br/>≥ 8.0?}
+        K -->|Yes| L[Award Certificate]
+        K -->|No| M[Continue Training]
+        L --> N[Update Leaderboard]
+        M --> N
     end
 
-    style A fill:#e1f5ff
+    style U fill:#e1f5ff
     style C fill:#e1f5ff
     style F fill:#e1f5ff
     style I fill:#e1f5ff
+    style L fill:#c8e6c9
     style B fill:#fff4e1
     style D fill:#fff4e1
     style H fill:#fff4e1
@@ -55,20 +67,53 @@ graph LR
 
 ```mermaid
 graph TB
-    UI["🖥️ USER INTERFACE<br/>Streamlit | Analyze, Generate, Practice<br/>Dashboard, Leaderboard, Profile"]
-    APP["⚙️ APPLICATION<br/>run_app_enhanced.py<br/>Session State | UI Rendering"]
-    SVC["🔧 SERVICE LAYER<br/>yelp_ai_client | insights_service<br/>enhanced_features"]
-    DATA["💾 DATA LAYER<br/>schemas.py | config.py<br/>JSON Storage"]
-    EXT["🤖 YELP AI API<br/>Review Analysis | NLG<br/>Response Evaluation"]
+    UI["🖥️ USER INTERFACE<br/>Streamlit Multi-Tab<br/>Training | Analytics | Leaderboard | Reports"]
+    APP["⚙️ APPLICATION<br/>run_app_enhanced.py<br/>Session State | UI Rendering | Navigation"]
+    
+    subgraph "SERVICE LAYER"
+        SVC1["yelp_ai_client<br/>API Communication"]
+        SVC2["insights_service<br/>Analysis & Scenarios"]
+        SVC3["user_manager<br/>Profile & Progress"]
+        SVC4["performance_metrics<br/>Tracking & Stats"]
+    end
+    
+    subgraph "DATA LAYER"
+        DATA1["schemas.py<br/>Pydantic Models"]
+        DATA2["config.py<br/>Settings"]
+        DATA3["user_data.json<br/>Persistent Storage"]
+        DATA4["performance_metrics.json<br/>Performance Logs"]
+    end
+    
+    EXT["🤖 YELP AI API<br/>Review Analysis<br/>Scenario Generation<br/>Response Evaluation"]
 
-    UI --> APP --> SVC
-    SVC --> DATA
-    SVC --> EXT
+    UI --> APP
+    APP --> SVC1
+    APP --> SVC2
+    APP --> SVC3
+    APP --> SVC4
+    
+    SVC1 --> EXT
+    SVC2 --> SVC1
+    SVC3 --> DATA3
+    SVC4 --> DATA4
+    
+    SVC1 --> DATA1
+    SVC2 --> DATA1
+    SVC3 --> DATA1
+    
+    SVC1 --> DATA2
+    SVC2 --> DATA2
 
     style UI fill:#e1f5ff,stroke:#0288d1,stroke-width:2px
     style APP fill:#fff4e1,stroke:#f57c00,stroke-width:2px
-    style SVC fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
-    style DATA fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style SVC1 fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    style SVC2 fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    style SVC3 fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    style SVC4 fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    style DATA1 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style DATA2 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style DATA3 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style DATA4 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
     style EXT fill:#ffe0b2,stroke:#e64a19,stroke-width:2px
 ```
 
@@ -76,12 +121,15 @@ graph TB
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
-| **Frontend** | Streamlit 1.37+ | Web UI framework |
-| **Backend** | Python 3.11 | Application logic |
-| **AI Engine** | Yelp AI Chat API | NLU & NLG |
-| **Validation** | Pydantic 2.8+ | Data validation |
-| **Storage** | JSON Files | Persistence |
-| **Deployment** | Streamlit Cloud | Hosting |
+| **Frontend** | Streamlit 1.37+ | Multi-tab web UI framework |
+| **Backend** | Python 3.11 | Application logic & services |
+| **AI Engine** | Yelp AI Chat API | Review analysis, NLU & NLG |
+| **Validation** | Pydantic 2.8+ | Data validation & models |
+| **User Management** | user_manager.py | Profile & progress tracking |
+| **Storage** | JSON Files | User data & metrics persistence |
+| **Testing** | pytest + pytest-mock | 113 unit tests (100% pass) |
+| **CI/CD** | GitHub Actions | Automated testing & deployment |
+| **Deployment** | Streamlit Cloud | Production hosting |
 
 ## What is YelpReviewGym?
 
