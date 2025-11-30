@@ -48,17 +48,19 @@ def build_scenarios_prompt(
     """
     if not pain_points:
         pain_list = "- Customer service issues"
+        num_scenarios = 1
     else:
-        top_pains = pain_points[:2]
+        # Use all pain points, but limit to max 5 for API efficiency
+        top_pains = pain_points[:5]
         pain_list = "\n".join(f"- {p}" for p in top_pains)
+        num_scenarios = len(top_pains)
     
     return f"""
-Create 2 training scenarios for {business_name} staff.
+Based on Yelp reviews for {business_name} in {location} ({business_type}), create {num_scenarios} customer service training scenarios, one for each of these complaints:
 
-Customer complaints:
 {pain_list}
 
-Return JSON:
+Return ONLY valid JSON with no additional text or explanation:
 
 {{
   "scenarios": [
@@ -125,7 +127,7 @@ def build_feedback_prompt(
     good_staff = scenario.good_dialogue[1].text if len(scenario.good_dialogue) > 1 else "Show empathy and offer solutions"
 
     return f"""
-Evaluate this customer service response for {business_name}.
+Evaluate this customer service response for {business_name} in {location} ({business_type}).
 
 Customer: "{customer_line}"
 
@@ -133,7 +135,7 @@ Staff replied: "{staff_reply}"
 
 Good example: "{good_staff}"
 
-Rate 0-10 and return JSON:
+Rate the staff response from 0-10 and return ONLY valid JSON with no additional text or explanation:
 
 {{
   "score": 8.5,
@@ -201,9 +203,12 @@ def generate_scenarios(
         parsed_json, raw_text = YelpAIClient.json_from_response(raw)
         if parsed_json is None:
             return [], raw_text
-        return parse_scenarios_json(parsed_json), raw_text
+        scenarios = parse_scenarios_json(parsed_json)
+        return scenarios, raw_text
     except Exception as e:
         print(f"Error generating scenarios: {e}")
+        import traceback
+        traceback.print_exc()
         return [], ""
 
 
@@ -225,7 +230,10 @@ def evaluate_staff_reply(
         parsed_json, raw_text = YelpAIClient.json_from_response(raw)
         if parsed_json is None:
             return FeedbackResult(score=None, summary="", strengths=[], improvements=[]), raw_text
-        return parse_feedback_json(parsed_json), raw_text
+        feedback = parse_feedback_json(parsed_json)
+        return feedback, raw_text
     except Exception as e:
         print(f"Error evaluating reply: {e}")
+        import traceback
+        traceback.print_exc()
         return FeedbackResult(score=None, summary="Error", strengths=[], improvements=[]), ""

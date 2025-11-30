@@ -12,9 +12,10 @@ Turn your **Yelp reviews** into interactive customer-service training for your t
 ## Quick Highlights
 
 - **AI-Powered**: Uses Yelp AI API for review analysis, scenario generation, and feedback
-- **Automated Training**: Converts real customer pain points into practice scenarios
-- **Progress Tracking**: Leaderboards, badges, and performance analytics
-- **Production Ready**: 48 unit tests, performance monitoring, deployed live
+- **User Management**: Persistent profiles, progress tracking, and session recovery
+- **Certification System**: Performance-based certificates for scores ≥ 8.0/10
+- **Competitive Features**: Global and business-specific leaderboards with smart filtering
+- **Production Ready**: 113 unit tests, performance monitoring, deployed live
 - **Fast Setup**: Install and run in under 5 minutes
 
 ## Architecture Overview
@@ -93,22 +94,54 @@ YelpReviewGym uses **Yelp AI** to analyze your business's Yelp reviews and autom
 ## Features
 
 ### Core Features
-- **Automatic Review Analysis** - Extracts patterns from your Yelp reviews
-- **Scenario Generation** - Creates bad vs. good dialogue examples for each pain point
-- **AI Feedback** - Scores staff responses (0-10) with strengths & improvements
-- **Powered by Yelp AI** - Uses real business data from Yelp
+- **Automatic Review Analysis** - Extracts patterns from your Yelp reviews using Yelp AI
+- **Scenario Generation** - Creates 5 training scenarios per business from real pain points
+- **AI Feedback** - Scores staff responses (0-10) with detailed strengths & improvements
+- **Powered by Yelp AI** - Uses real business data and advanced language models
 
-### Professional Edition Features
-- **Progress Tracking** - Save and track all training sessions with JSON persistence
-- **Leaderboard System** - Team rankings, competition, and top performer tracking
-- **Badges & Achievements** - Gamification with "First Steps", "Practice Makes Perfect", "Master Trainer", "High Achiever", "Perfect Score"
-- **Analytics Dashboard** - Score trends, improvement tracking, and visual charts
-- **Certification System** - Bronze/Silver/Gold certificates based on performance
-- **Training Reports** - Comprehensive session reports with downloadable exports
-- **User Profiles** - Individual performance tracking and personalized stats
-- **Difficulty Levels** - Easy/Medium/Hard scenarios with smart categorization
-- **Multi-tab Interface** - Organized tabs for Training, Analytics, Leaderboard, and Reports
-- **Session Tracking** - Monitor time spent and scenarios practiced per session
+### User Management System
+- **Persistent User Profiles** - Unique usernames with complete training history
+- **Username Validation** - 3-20 characters, alphanumeric with spaces/underscores
+- **Profile Management** - View, export, or delete user profiles with confirmation
+- **Session Recovery** - Resume training sessions for incomplete businesses
+- **Data Export** - Download complete user data as JSON
+
+### Progress Tracking & Analytics
+- **Business-Specific Tracking** - Save progress separately for each business
+- **Completion Status** - Track completed vs in-progress scenarios
+- **Quick Stats Dashboard** - Total attempts, avg score, businesses trained, global rank
+- **Score History** - Complete history of all attempts and scores
+- **Progress Indicators** - Visual progress bars and completion percentages
+- **Comparison Metrics** - Compare performance to platform averages
+
+### Leaderboard System
+- **Global Leaderboard** - Platform-wide rankings by average score
+- **Business-Specific Leaderboards** - Compare performance on specific businesses
+- **Smart Filtering** - Only shows users with actual training attempts
+- **Real-Time Updates** - Instant rank updates after each scenario
+- **Top Performer Tracking** - Highlights best performers with special indicators
+
+### Certification System
+- **Performance-Based Certificates** - Awarded for average scores ≥ 8.0/10
+- **Business-Specific Certificates** - Separate certificates per business trained
+- **Score Protection** - Only updates with better scores, never downgrades
+- **Certificate Display** - Beautiful certificate UI with business details and dates
+- **Certificate Counter** - Track total certificates earned across all businesses
+
+### Enhanced User Experience
+- **Multi-Tab Interface** - Training, Analytics (private), Leaderboard (public), Reports (private)
+- **Immediate Feedback** - Instant completion notifications with navigation options
+- **Progress Bars** - Visual feedback during AI processing
+- **Celebration Moments** - Balloons and animations for achievements
+- **Privacy Controls** - Personal analytics separate from public leaderboard
+- **Smart Navigation** - "Practice Another" and "View Progress" buttons after completion
+
+### Training Features
+- **5 Scenarios Per Business** - Maximum training variety from all pain points
+- **Difficulty Categorization** - AI-assigned difficulty levels for each scenario
+- **Bad vs Good Examples** - Learn from both negative and positive dialogue
+- **Context-Rich Scenarios** - Includes customer persona and business context
+- **Flexible Practice** - Practice scenarios in any order, repeat as needed
 
 ## Quick Start
 
@@ -121,7 +154,7 @@ YelpReviewGym uses **Yelp AI** to analyze your business's Yelp reviews and autom
 
 ```bash
 # Clone and navigate to project
-cd CareRoute
+cd YelpReviewGym
 
 # Install dependencies with uv (recommended)
 uv sync

@@ -30,6 +30,10 @@ ENV/
 .env
 .env.local
 
+# User data and metrics
+user_data.json
+performance_metrics.json
+
 # IDE
 .vscode/
 .idea/
