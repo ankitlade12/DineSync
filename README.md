@@ -323,10 +323,10 @@ sequenceDiagram
     User 1->>DineSync: Create session for Dallas, TX
     DineSync-->>User 1: Share link with User 2
     
-    User 1->>DineSync: Submit preferences<br/>(Italian, Vegetarian, $$)
-    User 2->>DineSync: Submit preferences<br/>(Indian, Vegetarian, $$$$)
+    User 1->>DineSync: Submit preferences<br/>(Italian, Vegetarian, Budget)
+    User 2->>DineSync: Submit preferences<br/>(Indian, Vegetarian, Premium)
     
-    DineSync->>YelpAI: Search: Italian OR Indian<br/>with Vegetarian options<br/>$$ to $$$$ range
+    DineSync->>YelpAI: Search: Italian OR Indian<br/>with Vegetarian options<br/>Budget to Premium range
     YelpAI-->>DineSync: 6 restaurants (2-3 per cuisine)
     
     DineSync->>DineSync: Run consensus algorithm
