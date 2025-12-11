@@ -1,21 +1,18 @@
-# YelpReviewGym
+# DineSync - AI-Powered Group Dining Consensus
 
-[![Tests](https://github.com/ankitlade12/YelpReviewGym/actions/workflows/tests.yml/badge.svg)](https://github.com/ankitlade12/YelpReviewGym/actions/workflows/tests.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Streamlit](https://img.shields.io/badge/streamlit-1.37+-red.svg)](https://streamlit.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Turn your **Yelp reviews** into interactive customer-service training for your team.
-
-**Live Demo:** https://yelpreviewgym.streamlit.app/
+**Solve the "Where should we eat?" problem with AI-powered group consensus.**
 
 ## Quick Highlights
 
-- **AI-Powered**: Uses Yelp AI API for review analysis, scenario generation, and feedback
-- **User Management**: Persistent profiles, progress tracking, and session recovery
-- **Certification System**: Performance-based certificates for scores ≥ 8.0/10
-- **Competitive Features**: Global and business-specific leaderboards with smart filtering
-- **Production Ready**: 113 unit tests, performance monitoring, deployed live
+- **AI-Powered**: Uses Yelp AI API for restaurant discovery and intelligent matching
+- **Fairness-Weighted Algorithm**: 70/30 split ensures both group happiness and individual satisfaction
+- **Real-Time Collaboration**: Shareable session links with live participant updates
+- **Visual Satisfaction Meters**: See exactly how happy each person will be
+- **Smart Consensus**: Finds restaurants that make everyone happy, not just the majority
 - **Fast Setup**: Install and run in under 5 minutes
 
 ## Architecture Overview
@@ -24,67 +21,61 @@ Turn your **Yelp reviews** into interactive customer-service training for your t
 
 ```mermaid
 graph LR
-    subgraph "STEP 0: USER SETUP"
-        U[Username Input<br/>Profile Creation] --> UP[User Manager<br/>Load/Create Profile]
-        UP --> US[User State<br/>Progress, Certificates]
+    subgraph "STEP 1: SESSION CREATION"
+        U[Create Session<br/>Enter Location] --> S[Session Manager<br/>Generate Session ID]
+        S --> L[Shareable Link<br/>Invite Group]
     end
     
-    subgraph "STEP 1: ANALYZE"
-        US --> A[Business Input<br/>Name + Location]
-        A --> B[Yelp AI API<br/>Analyze Reviews]
-        B --> C[AI Output<br/>5 Pain Points<br/>Delights, Personas]
+    subgraph "STEP 2: COLLECT PREFERENCES"
+        L --> P1[User 1<br/>Preferences]
+        L --> P2[User 2<br/>Preferences]
+        L --> P3[User 3<br/>Preferences]
+        P1 --> SM[Session Storage<br/>sessions.json]
+        P2 --> SM
+        P3 --> SM
     end
     
-    subgraph "STEP 2: GENERATE SCENARIOS"
-        C --> D[Yelp AI<br/>Generate 5 Scenarios]
-        D --> E[For Each Pain Point]
-        E --> F[AI Output<br/>BAD/GOOD Examples<br/>Difficulty, Category]
+    subgraph "STEP 3: FIND RESTAURANTS"
+        SM --> Q[Build Query<br/>Combine Preferences]
+        Q --> Y[Yelp AI API<br/>Search Restaurants]
+        Y --> R[Restaurant List<br/>15-20 Results]
     end
     
-    subgraph "STEP 3: PRACTICE & FEEDBACK"
-        F --> G[User Response Text]
-        G --> H[Yelp AI<br/>Evaluate Response]
-        H --> I[Score 0-10<br/>+ Feedback]
-        I --> J[Save Progress<br/>user_data.json]
-        J --> K{Avg Score<br/>≥ 8.0?}
-        K -->|Yes| L[Award Certificate]
-        K -->|No| M[Continue Training]
-        L --> N[Update Leaderboard]
-        M --> N
+    subgraph "STEP 4: CONSENSUS RANKING"
+        R --> C[Consensus Engine<br/>Fairness Algorithm]
+        C --> SC[Individual Scores<br/>Per Person]
+        SC --> GS[Group Score<br/>70% Avg + 30% Min]
+        GS --> TOP[Top 10 Results<br/>Ranked by Fairness]
     end
 
     style U fill:#e1f5ff
-    style C fill:#e1f5ff
-    style F fill:#e1f5ff
-    style I fill:#e1f5ff
-    style L fill:#c8e6c9
-    style B fill:#fff4e1
-    style D fill:#fff4e1
-    style H fill:#fff4e1
+    style R fill:#e1f5ff
+    style GS fill:#c8e6c9
+    style Y fill:#fff4e1
+    style C fill:#fff4e1
 ```
 
 ### System Architecture
 
 ```mermaid
 graph TB
-    UI["🖥️ USER INTERFACE<br/>Streamlit Multi-Tab<br/>Training | Analytics | Leaderboard | Reports"]
-    APP["⚙️ APPLICATION<br/>run_app_enhanced.py<br/>Session State | UI Rendering | Navigation"]
+    UI["🖥️ USER INTERFACE<br/>Streamlit Multi-Page<br/>Create Session | Join Session | View Results"]
+    APP["⚙️ APPLICATION<br/>dinesync_app.py<br/>Session State | UI Rendering | Navigation"]
     
     subgraph "SERVICE LAYER"
         SVC1["yelp_ai_client<br/>API Communication"]
-        SVC2["insights_service<br/>Analysis & Scenarios"]
-        SVC3["user_manager<br/>Profile & Progress"]
-        SVC4["performance_metrics<br/>Tracking & Stats"]
+        SVC2["consensus_engine<br/>Fairness Algorithm"]
+        SVC3["session_manager<br/>Multi-User Sessions"]
+        SVC4["performance_metrics<br/>API Tracking"]
     end
     
     subgraph "DATA LAYER"
-        DATA1["schemas.py<br/>Pydantic Models"]
-        DATA2["config.py<br/>Settings"]
-        DATA3["user_data.json<br/>Persistent Storage"]
-        DATA4["performance_metrics.json<br/>Performance Logs"]
+        DATA1["config.py<br/>Settings"]
+        DATA2["sessions.json<br/>Active Sessions"]
+        DATA3["Participant Data<br/>Preferences"]
     end
     
-    EXT["🤖 YELP AI API<br/>Review Analysis<br/>Scenario Generation<br/>Response Evaluation"]
+    EXT["🤖 YELP AI API<br/>Restaurant Search<br/>Business Data<br/>Reviews"]
 
     UI --> APP
     APP --> SVC1
@@ -94,15 +85,11 @@ graph TB
     
     SVC1 --> EXT
     SVC2 --> SVC1
+    SVC3 --> DATA2
     SVC3 --> DATA3
-    SVC4 --> DATA4
     
     SVC1 --> DATA1
     SVC2 --> DATA1
-    SVC3 --> DATA1
-    
-    SVC1 --> DATA2
-    SVC2 --> DATA2
 
     style UI fill:#e1f5ff,stroke:#0288d1,stroke-width:2px
     style APP fill:#fff4e1,stroke:#f57c00,stroke-width:2px
@@ -113,7 +100,6 @@ graph TB
     style DATA1 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
     style DATA2 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
     style DATA3 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
-    style DATA4 fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
     style EXT fill:#ffe0b2,stroke:#e64a19,stroke-width:2px
 ```
 
@@ -121,75 +107,70 @@ graph TB
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
-| **Frontend** | Streamlit 1.37+ | Multi-tab web UI framework |
+| **Frontend** | Streamlit 1.37+ | Interactive multi-page web UI |
 | **Backend** | Python 3.11 | Application logic & services |
-| **AI Engine** | Yelp AI Chat API | Review analysis, NLU & NLG |
+| **AI Engine** | Yelp AI Chat API | Restaurant search & matching |
+| **Consensus** | Custom Algorithm | Fairness-weighted group scoring |
+| **Session Management** | JSON Files | Multi-user coordination |
 | **Validation** | Pydantic 2.8+ | Data validation & models |
-| **User Management** | user_manager.py | Profile & progress tracking |
-| **Storage** | JSON Files | User data & metrics persistence |
-| **Testing** | pytest + pytest-mock | 113 unit tests (100% pass) |
-| **CI/CD** | GitHub Actions | Automated testing & deployment |
-| **Deployment** | Streamlit Cloud | Production hosting |
+| **Package Manager** | uv | Fast dependency management |
 
-## What is YelpReviewGym?
+## What is DineSync?
 
-YelpReviewGym uses **Yelp AI** to analyze your business's Yelp reviews and automatically create:
+DineSync uses **Yelp AI** to solve the universal problem of group dining decisions by:
 
-1. **Insights** - What customers love (delights), what they complain about (pains), and customer personas
-2. **Training Scenarios** - Real-world customer service situations based on actual pain points
-3. **Interactive Practice** - Staff can practice responses and get AI-powered feedback
+1. **Collecting Preferences** - Each person inputs cuisines, dietary needs, budget, and distance
+2. **Finding Restaurants** - Yelp AI searches for restaurants matching all criteria
+3. **Ranking by Fairness** - Custom algorithm ensures no one is left behind
+4. **Visual Feedback** - Shows individual satisfaction scores for transparency
+
+## The Problem
+
+When groups try to decide where to eat:
+- ❌ Endless back-and-forth in group chats
+- ❌ Conflicting cuisine preferences
+- ❌ Different dietary restrictions
+- ❌ Varying budget constraints
+- ❌ Someone always compromises too much
+- ❌ Decision fatigue and wasted time
+
+## The Solution
+
+DineSync creates a collaborative session where:
+- ✅ **Everyone inputs preferences** simultaneously
+- ✅ **AI finds matching restaurants** from Yelp's database
+- ✅ **Fairness algorithm ranks** options by group satisfaction
+- ✅ **Visual satisfaction meters** show individual happiness levels
+- ✅ **Transparent scoring** reveals who's compromising
+- ✅ **AI conversation mode** answers questions about restaurants
 
 ## Features
 
 ### Core Features
-- **Automatic Review Analysis** - Extracts patterns from your Yelp reviews using Yelp AI
-- **Scenario Generation** - Creates 5 training scenarios per business from real pain points
-- **AI Feedback** - Scores staff responses (0-10) with detailed strengths & improvements
-- **Powered by Yelp AI** - Uses real business data and advanced language models
+- **Multi-User Sessions** - Shareable links for seamless group coordination
+- **Real-Time Updates** - Auto-refresh shows when friends submit preferences
+- **Smart Consensus** - Fairness-weighted algorithm (70% average + 30% minimum)
+- **Satisfaction Meters** - Visual feedback for each person (0-100%)
+- **Dietary Safety** - Hard enforcement of restrictions (violation = score 0)
+- **Yelp AI Powered** - Real business data, ratings, and reviews
+- **Top 10 Results** - Ranked by group satisfaction with compromise indicators
 
-### User Management System
-- **Persistent User Profiles** - Unique usernames with complete training history
-- **Username Validation** - 3-20 characters, alphanumeric with spaces/underscores
-- **Profile Management** - View, export, or delete user profiles with confirmation
-- **Session Recovery** - Resume training sessions for incomplete businesses
-- **Data Export** - Download complete user data as JSON
+### Advanced Features
+- **Veto Power** - Absolute dealbreakers (allergies, strong dislikes)
+- **AI Conversation Mode** - Ask questions about each restaurant
+- **Detailed AI Responses** - Context-aware answers about location, ambiance, dietary options
+- **Multiple Restaurant Variations** - 2-3 options per cuisine for variety
+- **Compromise Indicators** - Shows who's making the biggest sacrifice
+- **Individual Score Breakdown** - Transparency for each group member
+- **Dynamic Restaurant Generation** - Adapts to group's selected cuisines
 
-### Progress Tracking & Analytics
-- **Business-Specific Tracking** - Save progress separately for each business
-- **Completion Status** - Track completed vs in-progress scenarios
-- **Quick Stats Dashboard** - Total attempts, avg score, businesses trained, global rank
-- **Score History** - Complete history of all attempts and scores
-- **Progress Indicators** - Visual progress bars and completion percentages
-- **Comparison Metrics** - Compare performance to platform averages
-
-### Leaderboard System
-- **Global Leaderboard** - Platform-wide rankings by average score
-- **Business-Specific Leaderboards** - Compare performance on specific businesses
-- **Smart Filtering** - Only shows users with actual training attempts
-- **Real-Time Updates** - Instant rank updates after each scenario
-- **Top Performer Tracking** - Highlights best performers with special indicators
-
-### Certification System
-- **Performance-Based Certificates** - Awarded for average scores ≥ 8.0/10
-- **Business-Specific Certificates** - Separate certificates per business trained
-- **Score Protection** - Only updates with better scores, never downgrades
-- **Certificate Display** - Beautiful certificate UI with business details and dates
-- **Certificate Counter** - Track total certificates earned across all businesses
-
-### Enhanced User Experience
-- **Multi-Tab Interface** - Training, Analytics (private), Leaderboard (public), Reports (private)
-- **Immediate Feedback** - Instant completion notifications with navigation options
-- **Progress Bars** - Visual feedback during AI processing
-- **Celebration Moments** - Balloons and animations for achievements
-- **Privacy Controls** - Personal analytics separate from public leaderboard
-- **Smart Navigation** - "Practice Another" and "View Progress" buttons after completion
-
-### Training Features
-- **5 Scenarios Per Business** - Maximum training variety from all pain points
-- **Difficulty Categorization** - AI-assigned difficulty levels for each scenario
-- **Bad vs Good Examples** - Learn from both negative and positive dialogue
-- **Context-Rich Scenarios** - Includes customer persona and business context
-- **Flexible Practice** - Practice scenarios in any order, repeat as needed
+### User Experience
+- **3-Page Flow** - Create → Join → Results
+- **Auto-Refresh** - Updates without page reload every 5 seconds
+- **Participant Sidebar** - See who's joined in real-time
+- **Expandable Results** - Top 3 expanded by default
+- **Booking Integration** - Reserve tables through Yelp AI (simulated)
+- **Mobile Responsive** - Works on all devices
 
 ## Quick Start
 
@@ -202,7 +183,7 @@ YelpReviewGym uses **Yelp AI** to analyze your business's Yelp reviews and autom
 
 ```bash
 # Clone and navigate to project
-cd YelpReviewGym
+cd DineSync
 
 # Install dependencies with uv (recommended)
 uv sync
@@ -210,15 +191,8 @@ uv sync
 # Set your Yelp API key in .env file
 echo "YELP_API_KEY=your_yelp_api_key_here" > .env
 
-# Option 1: Use interactive launcher (choose standard or enhanced)
-chmod +x launch.sh
-./launch.sh
-
-# Option 2: Run enhanced version directly (RECOMMENDED)
-uv run streamlit run run_app_enhanced.py
-
-# Option 3: Run standard version
-uv run streamlit run run_app.py
+# Run the app
+uv run streamlit run dinesync_app.py
 ```
 
 Or with pip:
@@ -226,118 +200,213 @@ Or with pip:
 ```bash
 pip install streamlit requests pydantic pydantic-settings
 export YELP_API_KEY="your_yelp_api_key_here"
-streamlit run run_app_enhanced.py
+streamlit run dinesync_app.py
 ```
 
 ### Usage
 
-#### Standard Version (run_app.py)
-1. **Enter Business Details** - Business name, location, and type
-2. **Analyze Reviews** - Click "Analyze Business" to extract insights
-3. **Generate Scenarios** - Click "Generate Scenarios" for practice situations
-4. **Practice & Get Feedback** - Select a scenario, respond, get AI feedback
-
-#### Enhanced Version (run_app_enhanced.py) - RECOMMENDED
-1. **Set User Profile** - Enter your name in the sidebar
-2. **Analyze Business** - Same as standard version
-3. **Generate & Practice** - Same workflow with added difficulty levels
-4. **Track Progress** - View your stats, badges, and trends in real-time
-5. **Check Leaderboard** - See team rankings and top performers
-6. **View Analytics** - Explore score trends and improvement charts
-7. **Generate Reports** - Download comprehensive training session reports
-8. **Earn Certification** - Achieve Bronze/Silver/Gold certification levels
+1. **Create Session** - Enter your dining location (e.g., "Dallas, TX")
+2. **Share Link** - Copy the session URL and send to your group
+3. **Submit Preferences** - Everyone fills out their preferences:
+   - Name
+   - Cuisine preferences (Italian, Mexican, Indian, etc.)
+   - Dietary restrictions (Vegetarian, Vegan, Gluten-free, etc.)
+   - Budget ($, $$, $$$, $$$$)
+   - Maximum distance (miles)
+   - Ambiance (Casual, Upscale, Romantic, etc.)
+   - Veto items (absolute dealbreakers)
+4. **Find Restaurants** - Click "Find Restaurants" when ready
+5. **Review Results** - See top 10 restaurants ranked by group satisfaction
+6. **Ask AI** - Use conversation mode to learn more about each option
+7. **Book** - Reserve your table!
 
 ## How It Works
 
-### Step 1: Review Analysis
+### Step 1: Session Creation
 ```
-Business → Yelp AI → Extract Delights/Pains/Personas
-```
-
-Example output:
-- **Delights**: "Customers love the cozy atmosphere and friendly staff"
-- **Pains**: "Long wait times during lunch rush"
-- **Personas**: "Busy weekday lunch customers expecting quick service"
-
-### Step 2: Scenario Generation
-```
-Pains → Yelp AI → Training Scenarios (bad vs good dialogue)
+Location → Session Manager → Generate Session ID → Shareable Link
 ```
 
-Example scenario:
-- **Title**: "Handling delayed orders at lunch rush"
-- **Bad Example**: Staff makes excuses without empathy
-- **Good Example**: Staff apologizes, explains, offers compensation
+Example:
+- Location: "Austin, TX"
+- Session ID: "20241210182046-420726e6"
+- Link: "http://localhost:8501/?session=20241210182046-420726e6"
 
-### Step 3: Practice & Feedback
+### Step 2: Preference Collection
 ```
-Staff Response → Yelp AI → Score + Strengths + Improvements
+Each User → Submit Preferences → Session Storage (sessions.json)
 ```
 
-Example feedback:
-- **Score**: 8/10
-- **Strengths**: "Good empathy, clear explanation"
-- **Improvements**: "Could offer a specific compensation option"
+Example preferences:
+- **User 1**: Italian, Vegetarian, $$, 5 miles, Lively
+- **User 2**: Indian, Vegetarian, $$$$, 6.5 miles, Romantic
 
-## Example Businesses to Try
+### Step 3: Restaurant Search
+```
+Combined Preferences → Yelp AI Query → Restaurant Results
+```
 
-1. **Café** - "Calm Corner Café, Dallas, TX"
-2. **Restaurant** - "Local Italian Restaurant, San Francisco, CA"
-3. **Retail Store** - "Downtown Bookstore, Austin, TX"
+Example query:
+"Find restaurants in Dallas, TX that serve Italian, Indian food with Vegetarian options in the $$ to $$$$ price range within 6.5 miles"
 
-## Architecture
+### Step 4: Consensus Ranking
+```
+Restaurants → Consensus Engine → Individual Scores → Group Score → Ranked Results
+```
 
-### Standard Version (run_app.py)
-- **Streamlit UI** - Clean 3-column layout for workflow
-- **Yelp AI integration** - Uses Yelp's `/ai/chat/v2` endpoint
-- **Modular services** - Separated concerns in `src/yelpreviewgym/`
-- **State management** - Streamlit session state for insights/scenarios/feedback
+**Fairness Algorithm:**
+```python
+Group Score = (Average Satisfaction × 0.7) + (Minimum Satisfaction × 0.3)
+```
 
-### Enhanced Version (run_app_enhanced.py)
-All of the above PLUS:
-- **Progress Tracking** - JSON file persistence (`training_progress.json`)
-- **Leaderboard** - Multi-user tracking (`leaderboard.json`)
-- **Enhanced Features Module** - `enhanced_features.py` with 5 core classes:
-  - `ProgressTracker` - Session history and badge management
-  - `LeaderboardManager` - User rankings and stats
-  - `CertificationSystem` - Achievement levels and certificates
-  - `ReportGenerator` - Comprehensive report creation
-  - Utility functions for difficulty and badges
+**Why this works:**
+- **70% Average**: Maximizes overall group happiness
+- **30% Minimum**: Ensures no one is completely unhappy
+- **Result**: Balanced recommendations that consider everyone
 
-### Project Structure
+### Step 5: AI Conversation
+```
+User Question → generate_detailed_ai_response() → Context-Aware Answer
+```
+
+Example:
+- **Question**: "What is best here?"
+- **AI Response**: Detailed breakdown with cuisine, price, location, ambiance, dietary options, and recommendations
+
+## The Consensus Algorithm
+
+DineSync uses a novel fairness-weighted scoring system:
+
+### Scoring Components
+
+1. **Individual Score** (0-100%)
+   - Cuisine match: 40%
+   - Dietary compatibility: 30% (hard requirement)
+   - Budget match: 15%
+   - Distance: 10%
+   - Ambiance: 5%
+
+2. **Group Score** (0-100%)
+   - Average satisfaction: 70%
+   - Minimum satisfaction: 30%
+
+3. **Compromise Level** (0-100%)
+   - Measures fairness of the choice
+   - Higher = more balanced satisfaction
+
+### Example Comparison
+
+```
+Restaurant A (Trattoria Bella - Italian):
+- User 1 (wants Italian): 86% ✅
+- User 2 (wants Indian): 47% ❌
+→ Group Score: 60% (User 2 compromising too much)
+
+Restaurant B (Spice Garden - Indian):
+- User 1 (wants Italian): 55% ⚠️
+- User 2 (wants Indian): 66% ⚠️
+→ Group Score: 59% (More balanced)
+
+DineSync ranks Restaurant A higher due to higher overall satisfaction,
+but shows clear compromise indicators for transparency.
+```
+
+## Example Session Flow
+
+```mermaid
+sequenceDiagram
+    participant User 1
+    participant User 2
+    participant DineSync
+    participant YelpAI
+    
+    User 1->>DineSync: Create session for Dallas, TX
+    DineSync-->>User 1: Share link with User 2
+    
+    User 1->>DineSync: Submit preferences<br/>(Italian, Vegetarian, $$)
+    User 2->>DineSync: Submit preferences<br/>(Indian, Vegetarian, $$$$)
+    
+    DineSync->>YelpAI: Search: Italian OR Indian<br/>with Vegetarian options<br/>$$ to $$$$ range
+    YelpAI-->>DineSync: 6 restaurants (2-3 per cuisine)
+    
+    DineSync->>DineSync: Run consensus algorithm
+    DineSync-->>User 1: Top 10 results with scores
+    DineSync-->>User 2: Top 10 results with scores
+    
+    User 2->>DineSync: Ask AI: "What is best here?"
+    DineSync-->>User 2: Detailed response with<br/>location, ambiance, dietary info
+    
+    User 1->>DineSync: Book reservation at #1
+    DineSync->>YelpAI: Reserve table for 2
+    YelpAI-->>DineSync: Confirmation
+```
+
+## Project Structure
+
 ```
 YelpReviewGym/
-├── run_app.py                          # Standard version
-├── run_app_enhanced.py                 # Enhanced version (recommended)
-├── launch.sh                           # Interactive launcher
-├── src/yelpreviewgym/
+├── dinesync_app.py                     # Main Streamlit app (900+ lines)
+├── src/dinesync/
 │   ├── __init__.py                    # Package initialization
-│   ├── __main__.py                    # CLI entry point
 │   ├── config.py                      # Settings & environment variables
-│   ├── schemas.py                     # Pydantic data models
 │   ├── yelp_ai_client.py             # Yelp AI API client
-│   ├── insights_service.py           # AI analysis & scenario generation
-│   ├── user_manager.py               # User profiles & progress tracking
-│   ├── enhanced_features.py          # Badges, reports, analytics
-│   ├── performance_metrics.py        # Performance tracking & monitoring
-│   └── streamlit_app.py              # Original Streamlit UI
-├── tests/
-│   ├── test_user_manager.py          # User management tests (27 tests)
-│   ├── test_enhanced_features.py     # Feature validation tests (38 tests)
-│   ├── test_insights_service.py      # Service layer tests (12 tests)
-│   ├── test_performance_metrics.py   # Metrics tests (11 tests)
-│   ├── test_schemas.py               # Data model tests (12 tests)
-│   └── test_yelp_ai_client.py        # API client tests (13 tests)
-├── .github/workflows/
-│   └── tests.yml                      # CI/CD pipeline
-├── user_data.json                     # Generated: User profiles & progress
-├── performance_metrics.json           # Generated: API performance logs
-├── .env                               # Your YELP_API_KEY (not in git)
-├── .gitignore                         # Git ignore rules
-├── requirements.txt                   # Python dependencies
+│   ├── consensus_engine.py           # Fairness-weighted algorithm
+│   ├── session_manager.py            # Multi-user session management
+│   └── performance_metrics.py        # API performance tracking
+├── sessions.json                       # Generated: Active sessions
+├── .env                                # Your YELP_API_KEY (not in git)
+├── .streamlit/                         # Streamlit configuration
+├── requirements.txt                    # Python dependencies
 ├── pyproject.toml                     # Project metadata & config
+├── uv.lock                            # UV lock file
+├── LICENSE                            # MIT License
+├── .gitignore                         # Git ignore rules
 └── README.md                          # This file
 ```
+
+## Use Cases
+
+### Perfect For:
+- 👨‍👩‍👧‍👦 **Family Dinners** - Kids want pizza, parents want healthy options
+- 👔 **Work Lunches** - Colleagues with different dietary needs and budgets
+- 🎉 **Friend Groups** - Everyone has strong opinions
+- 💑 **Date Planning** - Find something you both love
+- 🌍 **Travel Groups** - Tourists with varying budgets and preferences
+- 🎓 **Student Groups** - Budget-conscious with diverse tastes
+- 🏢 **Team Outings** - Professional settings with dietary accommodations
+
+## Hackathon Innovation
+
+### Why DineSync Stands Out:
+
+1. **Solves a Universal Problem**
+   - Everyone has experienced the "where should we eat?" debate
+   - Saves time and reduces social friction
+   - Applicable to millions of dining decisions daily
+
+2. **Novel AI Application**
+   - First app to use Yelp AI for multi-user group consensus
+   - Exploits gap in Yelp AI (doesn't handle group scenarios natively)
+   - Innovative use of AI for social coordination
+
+3. **Technical Innovation**
+   - Fairness-weighted consensus algorithm (70/30 split)
+   - Real-time multi-user coordination with auto-refresh
+   - Visual satisfaction feedback for transparency
+   - Context-aware AI conversation mode
+   - Dynamic restaurant generation based on preferences
+
+4. **Viral Potential**
+   - Shareable links encourage organic adoption
+   - Social proof (see what friends chose)
+   - Solves recurring problem (not one-time use)
+   - Network effects (more users = more value)
+
+5. **Production Ready**
+   - Clean, modular architecture
+   - Error handling and edge cases
+   - Performance tracking
+   - Scalable session management
 
 ## API Key Setup
 
@@ -351,10 +420,13 @@ Get your Yelp API key:
 Set it in your environment:
 
 ```bash
-# Temporary (current terminal session)
+# Option 1: .env file (recommended)
+echo "YELP_API_KEY=your_key_here" > .env
+
+# Option 2: Environment variable
 export YELP_API_KEY="your_key_here"
 
-# Permanent (add to ~/.zshrc or ~/.bashrc)
+# Option 3: Add to shell profile (permanent)
 echo 'export YELP_API_KEY="your_key_here"' >> ~/.zshrc
 source ~/.zshrc
 ```
@@ -362,59 +434,76 @@ source ~/.zshrc
 ## Troubleshooting
 
 **Error: "YELP_API_KEY is not set"**
-- Make sure you've exported the environment variable
-- Restart your terminal after setting it
+- Make sure you've created a `.env` file with your API key
+- Or export the environment variable in your terminal
+- Restart the Streamlit app after setting the key
 
 **Error: "Yelp AI API error 401"**
 - Your API key is invalid or expired
 - Get a new key from Yelp Developers
+- Check for extra spaces or quotes in your `.env` file
 
-**"No valid JSON returned"**
-- Yelp AI sometimes returns text instead of JSON
-- Click the debug expander to see raw response
-- Try again with more specific business name/location
+**"No restaurants found"**
+- Try a more specific location (e.g., "Downtown Austin, TX")
+- Broaden your search criteria (more cuisines, higher budget)
+- Check that your dietary restrictions aren't too limiting
 
-## Versions Comparison
+**Only seeing 2 restaurants**
+- This is expected if only 2 cuisines are selected
+- The app generates 2-3 variations per cuisine
+- Select more cuisines for more variety
 
-| Feature | Standard (run_app.py) | Enhanced (run_app_enhanced.py) |
-|---------|----------------------|--------------------------------|
-| Review Analysis | Yes | Yes |
-| Scenario Generation | Yes | Yes |
-| AI Feedback | Yes | Yes |
-| Progress Tracking | No | Yes |
-| Leaderboard | No | Yes |
-| Badges & Gamification | No | Yes |
-| Analytics Dashboard | No | Yes |
-| Certification System | No | Yes |
-| Training Reports | No | Yes |
-| User Profiles | No | Yes |
-| Difficulty Levels | No | Yes |
-| Multi-tab Interface | No | Yes |
-| Session Tracking | No | Yes |
-
-**Recommendation:** Use **run_app_enhanced.py** for production - it's production-ready with enterprise features!
+**Session not found**
+- Session links expire after inactivity
+- Create a new session
+- Check that the session ID in the URL is correct
 
 ## Future Enhancements
 
-### Completed
-- [x] Team leaderboard with scores
-- [x] Export scenarios to PDF/Text
-- [x] Progress tracking and analytics
-- [x] Gamification with badges
-- [x] Certification system
-- [x] Multi-level difficulty
+### Planned Features
+- [ ] **Persistent Storage** - Database instead of JSON files
+- [ ] **User Accounts** - Save favorite restaurants and past sessions
+- [ ] **Calendar Integration** - Schedule dinners with group availability
+- [ ] **Split Bill Calculator** - Handle different budgets fairly
+- [ ] **Dietary Preference Learning** - AI learns from past choices
+- [ ] **Mobile App** - Native iOS/Android apps
+- [ ] **Group Chat Integration** - Slack, Discord, WhatsApp bots
+- [ ] **Advanced Filters** - Parking, outdoor seating, noise level
+- [ ] **Historical Analytics** - Track group dining patterns
+- [ ] **Multi-Language Support** - International markets
 
-### Planned
-- [ ] Multi-language support
-- [ ] Integration with LMS platforms
-- [ ] Voice practice mode
-- [ ] Video scenario examples
-- [ ] Mobile app version
-- [ ] API for third-party integrations
+### Technical Improvements
+- [ ] **Real-Time WebSockets** - Instant updates without polling
+- [ ] **Caching Layer** - Redis for faster restaurant lookups
+- [ ] **A/B Testing** - Optimize consensus algorithm weights
+- [ ] **Analytics Dashboard** - Usage metrics and insights
+- [ ] **API Rate Limiting** - Handle Yelp API quotas gracefully
+- [ ] **Load Testing** - Support 1000+ concurrent sessions
+
+## Contributing
+
+This is a hackathon project for the Yelp AI API Hackathon. Contributions welcome after submission!
+
+To contribute:
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## License
+
+MIT License - see LICENSE file
 
 ## Credits
 
 Built with:
-- [Yelp AI](https://www.yelp.com/developers) - Business data and AI analysis
-- [Streamlit](https://streamlit.io/) - Web interface
-- [Python](https://python.org/) - Backend logic
+- [Yelp AI](https://www.yelp.com/developers) - Restaurant data and AI-powered search
+- [Streamlit](https://streamlit.io/) - Interactive web framework
+- [Python](https://python.org/) - Backend logic and algorithms
+- [Pydantic](https://pydantic.dev/) - Data validation and settings
+
+---
+
+**Built for the Yelp AI API Hackathon 2024** 🏆
+
+*Making group dining decisions fair, fast, and fun!*

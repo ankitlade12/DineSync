@@ -33,6 +33,7 @@ ENV/
 # User data and metrics
 user_data.json
 performance_metrics.json
+sessions.json
 
 # IDE
 .vscode/
@@ -60,10 +61,8 @@ htmlcov/
 .streamlit/secrets.toml
 
 # Data files (generated at runtime)
-training_progress.json
-leaderboard.json
-performance_metrics.json
+# The following files were moved to "User data and sessions" as they are user-specific or session-specific.
 
-# Hackathon files (local only)
+# Environment variables (local only)
 HACKATHON_SUBMISSION.md
 VIDEO_HACKATHON_SCRIPT.md
