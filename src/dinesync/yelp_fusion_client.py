@@ -39,7 +39,7 @@ class YelpFusionClient:
         Search for restaurants using Yelp Fusion API.
         
         Args:
-            location: City, address, or neighborhood
+            location: City, address, or neighborhood (e.g., "Dallas, TX" or "New York, NY")
             cuisines: List of cuisine types (e.g., ["italian", "mexican"])
             price: List of price levels (1=$, 2=$$, 3=$$$, 4=$$$$)
             radius: Search radius in meters (max 40000)
@@ -48,6 +48,17 @@ class YelpFusionClient:
         Returns:
             List of restaurant dictionaries with structured data
         """
+        # Validate location
+        if not location or not location.strip():
+            raise YelpFusionError("Location cannot be empty. Please provide a city and state (e.g., 'Dallas, TX')")
+        
+        # Clean and format location
+        location = location.strip()
+        
+        # Ensure location has at least city name
+        if len(location) < 3:
+            raise YelpFusionError(f"Location '{location}' is too short. Please provide a full city name and state (e.g., 'Dallas, TX')")
+        
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Accept": "application/json",

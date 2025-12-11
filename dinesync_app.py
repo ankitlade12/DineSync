@@ -668,11 +668,35 @@ def results_page(session_id: str):
                 restaurants.append(restaurant)
             
         except YelpFusionError as e:
-            st.error(f"Error searching Yelp: {str(e)}")
+            error_msg = str(e)
+            st.error(f"❌ Error searching Yelp: {error_msg}")
+            
+            # Provide helpful guidance based on error type
+            if "LOCATION_NOT_FOUND" in error_msg:
+                st.warning(f"""
+                **Location Issue:** Yelp couldn't find restaurants for "{session.location}"
+                
+                **Tips for better results:**
+                - Include city AND state (e.g., "Dallas, TX" not just "Dallas")
+                - Use full state names or abbreviations (e.g., "Texas" or "TX")
+                - Try a specific neighborhood (e.g., "Downtown Austin, TX")
+                - Avoid special characters or extra spaces
+                
+                **Examples that work:**
+                - ✅ "New York, NY"
+                - ✅ "San Francisco, CA"
+                - ✅ "Chicago, IL"
+                - ✅ "Austin, Texas"
+                """)
+            elif "401" in error_msg or "Unauthorized" in error_msg:
+                st.error("**API Key Issue:** Your Yelp API key may be invalid or expired. Check your `.env` file.")
+            elif "429" in error_msg or "rate limit" in error_msg.lower():
+                st.error("**Rate Limit:** Too many requests. Please wait a moment and try again.")
+            
             st.info("💡 For demo purposes, showing sample restaurants...")
             restaurants = get_sample_restaurants(user_prefs)
         except Exception as e:
-            st.error(f"Unexpected error: {str(e)}")
+            st.error(f"❌ Unexpected error: {str(e)}")
             st.info("💡 For demo purposes, showing sample restaurants...")
             restaurants = get_sample_restaurants(user_prefs)
     
